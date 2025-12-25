@@ -24,9 +24,7 @@ You should now be able to run the example code `example.ipynb` in this package, 
 
 ## How to cite this package
 If you use the PyMAVEN package, you can cite [this paper](https://agupubs.onlinelibrary.wiley.com/doi/10.1029/2025GL117836), or use the following citation:
-```
-Koh, Z., Poh, G., Fowler, C.M., Hanley, K.G., Ma, X., Gruesbeck, J. R., Kuruppuaratchi, D. C. P., Sun, W., DiBraccio, G. A., Espley, J. R., (2025). Global Occurrence of Kelvin-Helmholtz Vortices at Mars. Geophysical Research Letters, 52, e2025GL117836. DOI: 10.1029/2025GL117836
-```
+> Koh, Z., Poh, G., Fowler, C.M., Hanley, K.G., Ma, X., Gruesbeck, J. R., Kuruppuaratchi, D. C. P., Sun, W., DiBraccio, G. A., Espley, J. R., (2025). Global Occurrence of Kelvin-Helmholtz Vortices at Mars. Geophysical Research Letters, 52, e2025GL117836. DOI: 10.1029/2025GL117836
 
 ## License
 [MIT](LICENSE) © Ze-Wen Koh
