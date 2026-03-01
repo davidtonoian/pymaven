@@ -3,23 +3,24 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - ipykernel=6.19.2=py310h33ce5c2_0
-  - ipython=8.7.0=py310hca03da5_0
-  - ipython_genutils=0.2.0=pyhd3eb1b0_1
-  - ipywidgets=7.6.5=pyhd3eb1b0_1
-  - jupyter_client=7.4.8=py310hca03da5_0
-  - jupyter_core=5.1.1=py310hca03da5_0
-  - jupyter_server=1.23.4=py310hca03da5_0
-  - jupyterlab_pygments=0.1.2=py_0
-  - jupyterlab_widgets=1.0.0=pyhd3eb1b0_1
-  - matplotlib-base=3.6.2=py310h8bbb115_0
-  - matplotlib-inline=0.1.6=py310hca03da5_0
-  - notebook=6.5.2=py310hca03da5_0
-  - notebook-shim=0.2.2=py310hca03da5_0
-  - numpy-base=1.23.5=py310haf87e8b_0
-  - pip=22.3.1=py310hca03da5_0
+  - ipykernel=6.19.2
+  - ipython=8.7.0
+  - ipython_genutils=0.2.0
+  - ipywidgets=7.6.5
+  - jupyter_client=7.4.8
+  - jupyter_core=5.1.1
+  - jupyter_server=1.23.4
+  - jupyterlab_pygments=0.1.2
+  - jupyterlab_widgets=1.0.0
+  - matplotlib-base=3.6.2
+  - matplotlib-inline=0.1.6
+  - notebook=6.5.2
+  - notebook-shim=0.2.2
+  - numpy-base=1.23.5
+  - pip=22.3.1
   - python=3.10.8
   - pip:
-      - pandas==1.5.3
-      - pyspedas==1.4.40
-      - pytplot-mpl-temp==2.1.42
+      - pandas==2.0.3
+      - pyspedas== 2.0.8
+      #1.4.40
+      # - pytplot-mpl-temp==2.1.42

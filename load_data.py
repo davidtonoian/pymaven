@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
-import pytplot
+import pyspedas.tplot_tools as pytplot
 import pyspedas
 import os
 
-def load_mag(days_of_interest):
+def load_mag(days_of_interest, spdf = True):
     """
     Loads MAG data from MAVEN using pyspedas.
 
@@ -23,15 +23,15 @@ def load_mag(days_of_interest):
                 series.
     """
     for day in days_of_interest:
-        pyspedas.maven.mag(trange=[day, day])
-    mag = pytplot.data_quants['OB_B']
-    times = []
-    for nanos in mag.time.values:   # if in UNIX nanosecond format
-        ts = pd.Timestamp(nanos, tz = 'US/Eastern')
-        times.append(pd.Timestamp.to_datetime64(ts))
-    times = np.array(times)
-    Bvals = mag.values[:, 0:3]
-    posn = pytplot.data_quants['POSN'].values
+        pyspedas.projects.maven.mag(trange=[day, day], spdf = True) #introduce spdf=True for backwaards compatibliity? 
+    mag = pyspedas.get_data('OB_B')
+    # times = []
+    # for nanos in mag.times:   # if in UNIX nanosecond format
+    #     ts = pd.Timestamp(nanos, tz = 'US/Eastern')
+    #     times.append(pd.Timestamp.to_datetime64(ts))
+    times = pd.to_datetime(mag.times*1e9, unit = 'ns') #from epoch in seconds to 'datetime64[ns]'
+    Bvals = mag.y[:, 0:3]
+    posn = pyspedas.get_data('POSN').y
     posn = posn/3389.5 # normalized to Mars radii
     return {'times': times, 'B': Bvals, 'posn': posn}
 
@@ -56,14 +56,14 @@ def load_mag_sts(directory, filenames):
     for file in filenames:
         f = os.path.join(directory, file)
         pytplot.sts_to_tplot(f, prefix='',suffix='', merge=True)
-    mag = pytplot.data_quants['OB_B']
+    mag = pyspedas.get_data('OB_B')
     times = []
-    for nanos in mag.time.values:   # if in UNIX nanosecond format
+    for nanos in mag.times:   # if in UNIX nanosecond format
         ts = pd.Timestamp(nanos, tz = 'US/Eastern')
         times.append(pd.Timestamp.to_datetime64(ts))
     times = np.array(times)
     Bvals = mag.values[:, 0:3]
-    posn = pytplot.data_quants['POSN'].values
+    posn = pyspedas.get_data('POSN').values
     posn = posn/3389.5 # normalized to Mars radii
     return {'times': times, 'B': Bvals, 'posn': posn}
 
@@ -86,8 +86,8 @@ def load_swea(days_of_interest):
                 SWEA's measured energy bands.
     """
     for day in days_of_interest:
-        pyspedas.maven.swea(trange=[day, day])
-    swea = pytplot.data_quants['diff_en_fluxes_svyspec']
+        pyspedas.projects.maven.swea(trange=[day, day])
+    swea = pyspedas.get_data('diff_en_fluxes_svyspec')
     swea_times = swea.time.values
     swea_flux = swea.values
     swea_v = swea.v.values
@@ -113,12 +113,12 @@ def load_swia_mom(days_of_interest):
                 each point in the time series.
     """
     for day in days_of_interest:
-        pyspedas.maven.swia(trange=[day, day], datatype = 'onboardsvymom')
-    temperature = pytplot.data_quants['temperature_mso_onboardsvymom']
+        pyspedas.projects.maven.swia(trange=[day, day], datatype = 'onboardsvymom')
+    temperature = pyspedas.get_data('temperature_mso_onboardsvymom')
     swia_time = temperature.time.values
     temp = temperature.values
-    velocity = pytplot.data_quants['velocity_mso_onboardsvymom'].values
-    density = pytplot.data_quants['density_onboardsvymom'].values
+    velocity = pyspedas.get_data('velocity_mso_onboardsvymom').y
+    density = pyspedas.get_data('density_onboardsvymom').y
     return {'times': swia_time, 'temp': temp, 'vel': velocity, 'density': density}
 
 def load_swia_flux(days_of_interest):
@@ -140,11 +140,11 @@ def load_swia_flux(days_of_interest):
                 SWIA's measured energy bands.
     """
     for day in days_of_interest:
-        pyspedas.maven.swia(trange=[day, day], datatype = 'onboardsvyspec')
-    swia = pytplot.data_quants['spectra_diff_en_fluxes_onboardsvyspec']
-    swia_times = swia.time.values
-    swia_flux = swia.values
-    swia_v = swia.v.values
+        pyspedas.projects.maven.swia(trange=[day, day], datatype = 'onboardsvyspec')
+    swia = pyspedas.get_data('spectra_diff_en_fluxes_onboardsvyspec')
+    swia_times = swia.times
+    swia_flux = swia.y
+    swia_v = swia.v
     return {'times': swia_times, 'flux': swia_flux, 'v': swia_v}
 
 def load_static(days_of_interest):
@@ -166,19 +166,19 @@ def load_static(days_of_interest):
                 SWIA's measured energy bands.
     """
     for day in days_of_interest:
-        pyspedas.maven.sta(trange=[day, day], level='l2',datatype='c6', 
+        pyspedas.projects.maven.sta(trange=[day, day], level='l2',datatype='c6', 
                            get_support_data = True)
-    eflux = pytplot.data_quants['eflux_c6-32e64m']
-    static_times = eflux.time.values
-    swp_ind = pytplot.data_quants['swp_ind_c6-32e64m']
-    energy = pytplot.data_quants['energy_c6-32e64m']['data']
-    mass = pytplot.data_quants['mass_arr_c6-32e64m']['data']
+    eflux = pyspedas.get_data('eflux_c6-32e64m')
+    static_times = pd.to_datetime(eflux.times*1e9, unit = 'ns') #from epoch in seconds to 'datetime64[ns]'
+    swp_ind = pyspedas.get_data('swp_ind_c6-32e64m')
+    energy = pyspedas.get_data('energy_c6-32e64m')
+    mass = pyspedas.get_data('mass_arr_c6-32e64m')
 
     mas = []
-    for i in range(len(swp_ind.values)):
-        sweep = swp_ind.values[i]
+    for i in range(len(swp_ind.y)):
+        sweep = swp_ind.y[i]
         mas.append(mass[:,:,sweep])
     mas = np.asarray(mas)
 
-    return {'times': static_times, 'flux': eflux.values,
-            'sweep_index': swp_ind.values, 'energy': energy, 'mass': mas}
+    return {'times': static_times, 'flux': eflux.y,
+            'sweep_index': swp_ind.y, 'energy': energy, 'mass': mas}
